@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>For You 💖</title>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@1,500;1,600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --pink: #ff6a88;
+    --light-pink: #ff99cc;
+    --deep: #0a0a1a;
+    --cream: #ffe6f0;
+    --gold: #ffd700;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--deep);
+    color: #fff;
+    overflow: hidden;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    font-weight: 400;
+  }
+
+  /* ===== PARTICLES ===== */
+  #particles {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ===== PRELOADER ===== */
+  #intro {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at center, #1a1a2e, #0a0a1a);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.8s, visibility 0.8s;
+    padding: 20px;
+    text-align: center;
+  }
+  #intro.hidden { opacity: 0; visibility: hidden; }
+
+  .intro-heart {
+    font-size: 6rem;
+    animation: pulse 1.5s infinite;
+    filter: drop-shadow(0 0 40px var(--pink));
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
+
+  .intro-text {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-size: clamp(1.4rem, 5vw, 2rem);
+    color: var(--light-pink);
+    margin: 30px 0;
+    max-width: 500px;
+    line-height: 1.5;
+    opacity: 0;
+    animation: fadeUp 1s forwards 0.5s;
+    text-shadow: 0 0 20px rgba(255,106,136,0.5);
+  }
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+    from { transform: translateY(20px); }
+  }
+
+  .enter-btn {
+    background: linear-gradient(135deg, var(--pink), var(--light-pink));
+    border: none;
+    color: white;
+    padding: 18px 50px;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    opacity: 0;
+    animation: fadeUp 1s forwards 1.5s;
+    box-shadow: 0 0 40px rgba(255, 106, 136, 0.6);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .enter-btn:active { transform: scale(0.95); }
+
+  /* ===== PAGE SYSTEM ===== */
+  .page {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    padding: 20px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    z-index: 2;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(100%);
+    transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.6s, visibility 0.6s;
+    overflow: hidden;
+  }
+  
+  .page.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+    z-index: 10;
+  }
+  
+  .page.slide-out {
+    transform: translateX(-30%);
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .page-content {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    min-height: 0;
+  }
+  .page-content::-webkit-scrollbar { display: none; }
+
+  /* ===== TITLES (SIMPLE BOLD) ===== */
+  .section-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.5rem, 6vw, 2rem);
+    color: var(--light-pink);
+    margin-bottom: 4px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    line-height: 1.3;
+    text-shadow: 0 0 20px rgba(255, 106, 136, 0.4);
+    flex-shrink: 0;
+    letter-spacing: 0.5px;
+  }
+  .section-subtitle {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    color: #aaa;
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    flex-shrink: 0;
+  }
+
+  /* ===== NEXT BUTTON ===== */
+  .next-btn-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 10px 0 6px;
+    position: relative;
+    z-index: 5;
+    flex-shrink: 0;
+  }
+  .next-btn {
+    background: transparent;
+    border: 2px solid var(--pink);
+    color: var(--light-pink);
+    padding: 10px 30px;
+    border-radius: 50px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 0 20px rgba(255,106,136,0.2);
+  }
+  .next-btn:active {
+    background: var(--pink);
+    color: white;
+    transform: scale(0.95);
+  }
+
+  /* ===== HERO PAGE ===== */
+  #page-hero {
+    background: radial-gradient(ellipse at top, rgba(255,106,136,0.15), transparent 60%);
+    text-align: center;
+    justify-content: center;
+  }
+  #page-hero .page-content { flex: none; }
+  
+  .hero-name {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: clamp(2rem, 9vw, 3.5rem);
+    background: linear-gradient(135deg, #ff6a88, #ffccdd, #ff99cc, #ff6a88);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 4s ease infinite;
+    line-height: 1.2;
+    filter: drop-shadow(0 0 30px rgba(255, 106, 136, 0.4));
+    padding: 10px 0;
+    letter-spacing: 1px;
+  }
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  .hero-subtitle {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: clamp(0.95rem, 3.5vw, 1.2rem);
+    color: var(--cream);
+    margin-top: 10px;
+    letter-spacing: 0.5px;
+    opacity: 0.9;
+  }
+
+  /* ===== DATE PAGE ===== */
+  #page-together {
+    background: radial-gradient(circle at center, rgba(255,215,0,0.08), transparent 70%);
+  }
+  .together-date-box {
+    background: linear-gradient(135deg, rgba(255,106,136,0.2), rgba(255,153,204,0.1));
+    border: 2px solid rgba(255,153,204,0.4);
+    border-radius: 30px;
+    padding: 28px 18px;
+    text-align: center;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 20px 60px rgba(255,106,136,0.3), 0 0 80px rgba(255,106,136,0.15);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 350px;
+    margin: 0 auto;
+  }
+  .together-date-box::before, .together-date-box::after {
+    content: '💖';
+    position: absolute;
+    font-size: 5rem;
+    opacity: 0.08;
+    z-index: 0;
+  }
+  .together-date-box::before { top: -15px; left: -15px; transform: rotate(-20deg); }
+  .together-date-box::after { bottom: -15px; right: -15px; transform: rotate(20deg); }
+  
+  .together-date {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.8rem, 8vw, 2.6rem);
+    background: linear-gradient(135deg, #ff6a88, #ffccdd, #ff99cc, #ffd700, #ff6a88);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 4s ease infinite;
+    line-height: 1.2;
+    filter: drop-shadow(0 0 30px rgba(255, 106, 136, 0.5));
+    position: relative;
+    z-index: 1;
+    padding: 4px 0;
+    letter-spacing: 0.5px;
+  }
+  .together-caption {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: clamp(0.85rem, 3vw, 1rem);
+    color: var(--cream);
+    letter-spacing: 0.3px;
+    opacity: 0.9;
+    position: relative;
+    z-index: 1;
+    line-height: 1.55;
+  }
+  .date-divider {
+    width: 60%;
+    height: 2px;
+    margin: 0 auto;
+    background: linear-gradient(90deg, transparent, var(--pink), transparent);
+  }
+
+  /* ===== TIMELINE PAGE ===== */
+  #page-journey { background: linear-gradient(180deg, transparent, rgba(255,106,136,0.05), transparent); }
+  .timeline-container {
+    width: 100%;
+    max-width: 380px;
+    position: relative;
+    padding-left: 22px;
+    margin-top: 4px;
+  }
+  .timeline-container::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, transparent, var(--pink), var(--pink), transparent);
+  }
+  .timeline-item {
+    position: relative;
+    padding: 0 0 18px 18px;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.6s, transform 0.6s;
+  }
+  .timeline-item.visible { opacity: 1; transform: translateX(0); }
+  .timeline-item::after {
+    content: '💖';
+    position: absolute;
+    left: -36px;
+    top: 0;
+    width: 26px;
+    height: 26px;
+    background: var(--deep);
+    border: 2px solid var(--pink);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    box-shadow: 0 0 15px var(--pink);
+  }
+  .timeline-item h3 {
+    color: var(--light-pink);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 4px;
+    line-height: 1.3;
+    letter-spacing: 0.3px;
+  }
+  .timeline-item p {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    color: #bbb;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  /* ===== PHOTO PAGE ===== */
+  #page-memories { background: linear-gradient(180deg, transparent, rgba(255,153,204,0.05), transparent); }
+  
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    max-width: 400px;
+    width: 100%;
+    padding: 4px;
+    margin: 0 auto;
+  }
+  
+  .photo-card {
+    position: relative;
+    background: linear-gradient(135deg, var(--pink), var(--light-pink));
+    padding: 4px;
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    transition: transform 0.3s;
+  }
+  
+  .photo-card:active { transform: scale(0.95); }
+  
+  .photo-card .inner {
+    width: 100%;
+    height: 130px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #2a2a3e, #1a1a2e);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .photo-card .inner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  
+  .photo-card .caption {
+    position: absolute;
+    bottom: 4px;
+    left: 4px;
+    right: 4px;
+    background: linear-gradient(0deg, rgba(0,0,0,0.95), transparent);
+    color: white;
+    padding: 16px 4px 6px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.7rem;
+    text-align: center;
+    border-radius: 0 0 10px 10px;
+    font-weight: 400;
+  }
+
+  /* ===== SCRATCH PAGE ===== */
+  #page-scratch {
+    background: radial-gradient(circle at center, rgba(255,215,0,0.08), transparent 70%);
+  }
+  .scratch-wrapper {
+    position: relative;
+    max-width: 300px;
+    width: 100%;
+    height: 160px;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(255,106,136,0.3);
+    margin: 0 auto;
+  }
+  .scratch-content {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #2a1a2e, #1a1a2e);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    text-align: center;
+    border: 2px dashed var(--pink);
+    border-radius: 24px;
+  }
+  .scratch-content .reveal-text {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--light-pink);
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+  .scratch-content .reveal-sub {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--cream);
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+  #scratchCanvas {
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    touch-action: none;
+  }
+
+  /* ===== WHEEL PAGE ===== */
+  #page-wheel { background: linear-gradient(180deg, transparent, rgba(255,215,0,0.05), transparent); }
+  .wheel-container {
+    position: relative;
+    width: 230px;
+    height: 230px;
+    margin: 6px auto;
+  }
+  .wheel {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    position: relative;
+    transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+    box-shadow: 0 0 0 6px rgba(255,106,136,0.3), 0 0 40px rgba(255,106,136,0.4);
+    overflow: hidden;
+  }
+  .wheel-segment {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    transform-origin: 100% 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 12px;
+    color: white;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  }
+  .wheel-segment span {
+    transform: rotate(45deg);
+    display: inline-block;
+    max-width: 65px;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.5rem;
+    font-weight: 500;
+    line-height: 1.1;
+  }
+  .wheel-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--pink), var(--light-pink));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: white;
+    border: 3px solid #fff;
+    z-index: 10;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+  }
+  .wheel-pointer {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.6rem;
+    color: var(--gold);
+    filter: drop-shadow(0 0 10px var(--gold));
+    z-index: 11;
+  }
+  .wheel-result {
+    text-align: center;
+    color: var(--light-pink);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-top: 10px;
+    min-height: 40px;
+    padding: 0 10px;
+    line-height: 1.4;
+  }
+
+  /* ===== LETTER PAGE ===== */
+  #page-letter { background: radial-gradient(circle at center, rgba(255,106,136,0.08), transparent 70%); }
+  .envelope-inner {
+    background: linear-gradient(135deg, rgba(255,106,136,0.1), rgba(255,153,204,0.05));
+    border: 1px solid rgba(255,153,204,0.3);
+    border-radius: 22px;
+    padding: 20px 16px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+    width: 100%;
+    max-width: 350px;
+    position: relative;
+    margin: 0 auto;
+  }
+  .letter-content {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    color: var(--cream);
+    font-size: 0.82rem;
+    line-height: 1.7;
+  }
+  .letter-content p { margin-bottom: 10px; }
+  .letter-content .greeting {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--light-pink);
+    margin-bottom: 10px;
+    line-height: 1.3;
+    letter-spacing: 0.3px;
+  }
+  .letter-content .sign {
+    text-align: right;
+    margin-top: 12px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--light-pink);
+  }
+
+  /* ===== REASONS PAGE ===== */
+  #page-reasons { background: linear-gradient(180deg, transparent, rgba(255,106,136,0.05), transparent); }
+  .reasons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 340px;
+    margin: 0 auto;
+  }
+  .reason {
+    background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,106,136,0.05));
+    border: 1px solid rgba(255,153,204,0.2);
+    border-radius: 14px;
+    padding: 12px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .reason-icon {
+    font-size: 1.7rem;
+    margin-bottom: 5px;
+  }
+  .reason h3 {
+    color: var(--light-pink);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+    line-height: 1.3;
+    letter-spacing: 0.3px;
+  }
+  .reason p {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    color: #ccc;
+    font-size: 0.78rem;
+    line-height: 1.45;
+  }
+
+  /* ===== GIFT PAGE ===== */
+  #page-gift { background: linear-gradient(180deg, transparent, rgba(255,215,0,0.05), transparent); }
+  .gift-box {
+    position: relative;
+    width: 110px;
+    height: 110px;
+    margin: 10px auto 16px auto;
+    transition: transform 0.3s;
+  }
+  .gift-box:active { transform: scale(0.95); }
+  .gift-body { position: absolute; bottom: 0; width: 100%; height: 78px; background: linear-gradient(135deg, #ff6a88, #e63976); border-radius: 8px; box-shadow: 0 10px 25px rgba(255,106,136,0.5); }
+  .gift-lid {
+    position: absolute; top: 0; left: -8px; right: -8px; height: 32px;
+    background: linear-gradient(135deg, #ff99cc, #ff6a88); border-radius: 8px;
+    z-index: 2; transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  }
+  .gift-ribbon-v { position: absolute; left: 50%; top: 0; bottom: 0; width: 11px; transform: translateX(-50%); background: linear-gradient(180deg, #ffd700, #ffaa00); z-index: 3; }
+  .gift-ribbon-h { position: absolute; top: 32px; left: 0; right: 0; height: 11px; background: linear-gradient(180deg, #ffd700, #ffaa00); z-index: 3; }
+  .gift-box.open .gift-lid { transform: translateY(-75px) rotate(-25deg); }
+  .gift-reveal { display: none; text-align: center; margin-top: 12px; }
+  .gift-reveal.show { display: block; animation: fadeIn 0.6s; }
+  .gift-reveal h3 { color: var(--light-pink); font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 6px; line-height: 1.3; }
+  .gift-reveal p { font-family: 'Poppins', sans-serif; font-weight: 400; color: #bbb; font-size: 0.85rem; }
+
+  /* ===== FINALE PAGE ===== */
+  #page-finale {
+    background: radial-gradient(circle at center, rgba(255,106,136,0.15), transparent 70%);
+    text-align: center;
+    justify-content: center;
+  }
+  #page-finale .page-content { flex: none; }
+  
+  .finale-heart {
+    font-size: 4.5rem;
+    animation: pulse 1.5s infinite;
+    filter: drop-shadow(0 0 50px var(--pink));
+    margin: 10px 0;
+  }
+  .finale-text {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: clamp(1.1rem, 4.5vw, 1.5rem);
+    color: var(--light-pink);
+    margin-bottom: 20px;
+    line-height: 1.6;
+    text-shadow: 0 0 20px rgba(255,106,136,0.4);
+  }
+  .love-btn {
+    background: linear-gradient(135deg, var(--pink), var(--light-pink));
+    color: white;
+    border: none;
+    padding: 13px 35px;
+    border-radius: 50px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    box-shadow: 0 10px 40px rgba(255,106,136,0.5);
+    transition: all 0.3s;
+  }
+  .love-btn:active { transform: scale(0.95); }
+
+  /* ===== POPUP ===== */
+  .popup {
+    position: fixed;
+    inset: 0;
+    background: rgba(10,10,26,0.95);
+    backdrop-filter: blur(10px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+  }
+  .popup.active { display: flex; animation: fadeIn 0.4s; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .popup-card {
+    background: linear-gradient(135deg, #1a1a2e, #2a1a2e);
+    border: 2px solid var(--pink);
+    border-radius: 30px;
+    padding: 35px 20px;
+    text-align: center;
+    max-width: 320px;
+    width: 100%;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 0 60px rgba(255,106,136,0.5);
+  }
+  @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .popup-card .h { font-size: 3.5rem; display: inline-block; }
+  .popup-card h2 { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.3rem; color: var(--light-pink); margin: 12px 0; line-height: 1.3; letter-spacing: 0.3px; }
+  .popup-card p { font-family: 'Poppins', sans-serif; font-weight: 400; color: var(--cream); line-height: 1.7; font-size: 0.9rem; margin-bottom: 20px; }
+  .popup-card button { background: transparent; border: 2px solid var(--pink); color: var(--light-pink); padding: 9px 28px; border-radius: 50px; font-family: 'Poppins', sans-serif; font-size: 0.9rem; font-weight: 400; }
+
+  /* ===== MUSIC ===== */
+  .music-btn {
+    position: fixed;
+    bottom: 12px;
+    right: 12px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--pink), var(--light-pink));
+    border: none;
+    font-size: 1.1rem;
+    z-index: 500;
+    box-shadow: 0 5px 20px rgba(255,106,136,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .music-btn.playing { animation: spin 3s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @keyframes floatUp {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== PARTICLES ===== -->
+<canvas id="particles"></canvas>
+
+<!-- ===== MUSIC ===== -->
+<audio id="bgMusic" loop>
+  <source src="chaar-kadam.mp3" type="audio/mpeg">
+  <source src="https://cdn.pixabay.com/audio/2023/10/06/audio_9f8e3e1d9e.mp3" type="audio/mpeg">
+</audio>
+<button class="music-btn" id="musicBtn" onclick="toggleMusic()" title="Music">🎵</button>
+
+<!-- ===== PRELOADER ===== -->
+<div id="intro">
+  <div class="intro-heart">💖</div>
+  <div class="intro-text">Kuch khaas tumhare liye...<br>Ek chhoti si duniya, sirf tumhari 💫</div>
+  <button class="enter-btn" onclick="startJourney()">Andar Aao ✨</button>
+</div>
+
+<!-- ===== PAGE 1: HERO ===== -->
+<div class="page active" id="page-hero">
+  <div class="page-content">
+    <h1 class="hero-name">Tumhari Duniya 💖</h1>
+    <p class="hero-subtitle">Jahan har lamha tumhare naam...</p>
+  </div>
+  <div class="next-btn-container">
+    <button class="next-btn" onclick="nextPage('page-together')">Aage Badho ➔</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 2: DATE ===== -->
+<div class="page" id="page-together">
+  <div class="page-content">
+    <h2 class="section-title">Jab Hum Mile The 💫</h2>
+    <p class="section-subtitle">Woh Khaas Din</p>
+    <div class="together-date-box">
+      <div class="together-date">18 October</div>
+      <div class="together-caption">Pehli baar dil ne kaha — yeh kuch khaas hai 🌸</div>
+      <div class="date-divider"></div>
+      <div class="together-date">22 October</div>
+      <div class="together-caption">Aur haa 22 October is one of the happiest day of my life ✨</div>
+    </div>
+  </div>
+  <div class="next-btn-container">
+    <button class="next-btn" onclick="nextPage('page-journey')">Hamari Kahani ➔</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 3: JOURNEY ===== -->
+<div class="page" id="page-journey">
+  <div class="page-content">
+    <h2 class="section-title">Hamari Kahani</h2>
+    <p class="section-subtitle">Chhoti Chhoti Yaadein</p>
+    <div class="timeline-container">
+      <div class="timeline-item visible">
+        <h3>Pehli Baar 💫</h3>
+        <p>Jab hum pehli bar mile the to mene socha bhi nhi tha ki hum yha tk bhi pauch paenge pr hum pouch gye ya hme pauchaya gya hai "</p>
+      </div>
+      <div class="timeline-item visible">
+        <h3>Pehli Baat 💬</h3>
+        <p>Tere s pehlii bar bat krke nhi lga ki mai kisi anjan se bat kr rha hu tune bhut ache s bat ki mai kisi k sath bhi intni jldi gulta milta nhi hu pr pta nhi tere sath kya hua ki kisi anjan s bat kr rha hu .</p>
+      </div>
+      <div class="timeline-item visible">
+        <h3>Pehli Hasi 😊</h3>
+        <p>jb tu hasti hai to muje acha lgta hai aur mai yhi chaunga ki tu hamesa hasti rhe aur khush rhe .</p>
+      </div>
+      <div class="timeline-item visible">
+        <h3>Pehli Yaad 🌸</h3>
+        <p>Aur ab har din, har pal, tumhari yaad saath hai pta nhi kb milenge ab lekin mai tuje bhut miss kr rha hu yrr jb se tu gyi hai. .</p>
+      </div>
+    </div>
+  </div>
+  <div class="next-btn-container">
+    <button class="next-btn" onclick="nextPage('page-memories')">Yaadein Dekho ➔</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 4: MEMORIES ===== -->
+<div class="page" id="page-memories">
+  <div class="page-content">
+    <h2 class="section-title">Hamari Yaadein</h2>
+    <p class="section-subtitle">Kuch Lamhe Jo Khaas Hain</p>
+    <div class="photo-grid">
+      <div class="photo-card">
+        <div class="inner"><img src="https://i.ibb.co/zWzvxL8b/0-01.jpg" alt="0-01"></div>
+        <div class="caption">Woh pehli mulakat</div>
+      </div>
+      <div class="photo-card">
+        <div class="inner"><img src="https://i.ibb.co/Q7HvwhCr/cutie.jpg" alt="cutie"></div>
+        <div class="caption">Tumhari hasi</div>
+      </div>
+      <div class="photo-card">
+        <div class="inner"><img src="https://i.ibb.co/zWzvxL8b/0-01.jpg" alt="0-01"></div>
+        <div class="caption">Woh khaas pal</div>
+      </div>
+      <div class="photo-card">
+        <div class="inner"><img src="https://i.ibb.co/RpjLNGjs/radha.jpg" alt="radha"></div>
+        <div class="caption">Meri Radha rani</div>
+      </div>
+    </div>
+  </div>
+  <div class="next-btn-container">
+    <button class="next-btn" onclick="nextPage('page-scratch')">Ek Surprise 🎁 ➔</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 5: SCRATCH CARD ===== -->
+<div class="page" id="page-scratch">
+  <div class="page-content">
+    <h2 class="section-title">Ek Chhota Sa Surprise</h2>
+    <p class="section-subtitle">Scratch Karke Dekho</p>
+    <div class="scratch-wrapper">
+      <div class="scratch-content">
+        <div class="reveal-text">Tum Bohot Special Ho 💖</div>
+        <div class="reveal-sub">jb tum smile krti ho to bhut cuite lgti ho chota sa PANDA baby lgti ho isliye hamesha khush rha kr ✨</div>
+      </div>
+      <canvas id="scratchCanvas"></canvas>
+    </div>
+  </div>
+  <div class="next-btn-container">
+    <button class="next-btn" onclick="nextPage('page-wheel')">Kismat Ka Khel 🎡 ➔</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 6: WHEEL ===== -->
+<div class="page" id="page-wheel">
+  <div class="page-content">
+    <h2 class="section-title">Kismat Ka Khel</h2>
+    <p class="section-subtitle">Spin Karo Aur Dekho 🎡</p>
+    <div class="wheel-container">
+      <div class="wheel-pointer">▼</div>
+      <div class="wheel" id="wheel"></div>
+      <div class="wheel-center" onclick="spinWheel()">SPIN</div>
+    </div>
+    <div class="wheel-result" id="wheelResult"></div>
+  </div>
+  <div class="next-btn-container">
+    <button class="next-btn" onclick="nextPage('page-letter')">Chitthi Padho 💌 ➔</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 7: LOVE LETTER ===== -->
+<div class="page" id="page-letter">
+  <div class="page-content">
+    <h2 class="section-title">Ek Chitthi</h2>
+    <p class="section-subtitle">Dil Se Likhi Hui</p>
+    <div class="envelope-inner">
+      <div class="letter-content">
+        <div class="greeting">Meri golu molu PANDA ❤️ ,</div>
+        <p>mene kbhi socha nhi tha ki arti k bad meri life mai koi aaenga lekin jb se tu aayi hai tb se bhut khush hu. mai chahta hu ki tu bhi kush rhe kyu jb tu khush rhti hai to muje bhut achaa lgta hai tu bhut achi ldki hai muje promise kr ki kbhi bhi life meri vjh se dukhi nhi hogi aur hogi bhi to muje btaegi ki tune muje hurt kiye hai aur kyuki mai tuje khush dekna chahta hu</p>
+        <p>Aur haa jb hum pehli bar mile the to tune kya mene bhi nhi socha hoga ki hum dono yha tk bhi pauch paenge aur jo y last k 2,3 din the mere life k best din the kyuki in 2,3 din mai bhut khush tha</p>
+        <p>isliye nhi ki tu mili muje kyuki in 2,3 din mai tum logo k sath mja aya na wo mai bta skta soni bhuli aman amisha tu ,tum logo k sath bhut mja aya yrr thank you yrr tum sb ko meri life k best days dene k liye tum sb bhut ache ho mai tumhe nhi khona chahta yrr</p>
+        <p>aur ab is se jayad nhi likh paunga yrr nhi to rona aa jayega yrr love you guys💕</p>
+        <div class="sign">— your 0.1% ❤️</div>
+      </div>
+    </div>
+  </div>
+  <div class="next-btn-container">
+    <button class="next-btn" onclick="nextPage('page-reasons')">Kyun Khaas Ho 💝 ➔</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 8: REASONS ===== -->
+<div class="page" id="page-reasons">
+  <div class="page-content">
+    <h2 class="section-title">Kyun Tum Khaas Ho</h2>
+    <p class="section-subtitle">Kuch Wajah Jo Dil Se Hain</p>
+    <div class="reasons-container">
+      <div class="reason"><span class="reason-icon">😊</span><h3>TeriSmile</h3><p>Teri smile jb tu hasti hai to bhut achi lgti hai isliye hste rha kr .</p></div>
+      <div class="reason"><span class="reason-icon">💬</span><h3>Teri Baatein</h3><p>Tujse  baat karke lagta hai — sab kuch theek hai.</p></div>
+      <div class="reason"><span class="reason-icon">🌟</span><h3>Tera Dil</h3><p>Tera  dil bhut acha hai islye mai chahta hu ki tu bss apne dil ki sune .</p></div>
+      <div class="reason"><span class="reason-icon">🤝</span><h3>Tera Saath</h3><p>Tu saath ho toh har mushkil aasan lagti hai.</p></div>
+      <div class="reason"><span class="reason-icon">🎵</span><h3>Teri Awaaz</h3><p>Teri awaj bhut achi hai jb tune muje gana sunaya tha to bhut achaa lga .</p></div>
+      <div class="reason"><span class="reason-icon">💝</span><h3>Bas Tum Ho</h3><p>Koi wajah nahi chahiye — tu h, yeh hi sabse badi wajah hai.</p></div>
+    </div>
+  </div>
+  <div class="next-btn-container">
+    <button class="next-btn" onclick="nextPage('page-gift')">Ek Gift 🎁 ➔</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 9: GIFT ===== -->
+<div class="page" id="page-gift">
+  <div class="page-content">
+    <h2 class="section-title">Ek Gift 🎁</h2>
+    <p class="section-subtitle">Kholo Aur Dekho</p>
+    <div class="gift-box" id="giftBox" onclick="openGift()">
+      <div class="gift-lid"></div>
+      <div class="gift-body"></div>
+      <div class="gift-ribbon-v"></div>
+      <div class="gift-ribbon-h"></div>
+    </div>
+    <div class="gift-reveal" id="giftReveal">
+      <div style="font-size:3rem;">🧸</div>
+      <h3>Tere Liye Ek Pyaari Si Teddy 🧸</h3>
+      <p>Jab bhi akeli feel karo, isse hug kar lena 🤗</p>
+    </div>
+  </div>
+  <div class="next-btn-container">
+    <button class="next-btn" onclick="nextPage('page-finale')">Aakhri Baat 💖 ➔</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 10: FINALE ===== -->
+<div class="page" id="page-finale">
+  <div class="page-content">
+    <h2 class="section-title">Ek Aakhri Baat</h2>
+    <div class="finale-heart">💖</div>
+    <p class="finale-text">Tu bohot pyari hai...<br>Hamesha aise hi rehna 🌸</p>
+    <button class="love-btn" onclick="openLove()">Yahan Dabao 💌</button>
+  </div>
+</div>
+
+<!-- ===== POPUP ===== -->
+<div class="popup" id="lovePopup">
+  <div class="popup-card">
+    <span class="h">💖</span>
+    <h2>Tum Bohot Special Ho</h2>
+    <p>
+      Tumeri zindagi ka sabse khoobsurat hissa hai ajklhar din acah ja rha hai .<br>
+      Har din tumhare saath aur bhi pyara lagta hai.<br><br>
+      <strong style="color:var(--light-pink); font-size:1.1rem;">I Love You ❤️</strong>
+    </p>
+    <button onclick="closeLove()">Band Karo ✨</button>
+  </div>
+</div>
+
+<script>
+  // ===== PAGE NAVIGATION =====
+  let currentPageId = 'page-hero';
+
+  function startJourney() {
+    document.getElementById('intro').classList.add('hidden');
+    playMusic();
+  }
+
+  function nextPage(targetId) {
+    const current = document.getElementById(currentPageId);
+    const target = document.getElementById(targetId);
+    
+    current.classList.remove('active');
+    current.classList.add('slide-out');
+    target.classList.remove('slide-out');
+    
+    setTimeout(() => {
+      target.classList.add('active');
+      currentPageId = targetId;
+      
+      const content = target.querySelector('.page-content');
+      if(content) content.scrollTop = 0;
+
+      if (targetId === 'page-journey') {
+        document.querySelectorAll('.timeline-item').forEach(el => {
+          el.classList.remove('visible');
+          setTimeout(() => el.classList.add('visible'), 100);
+        });
+      }
+      
+      if (targetId === 'page-scratch' && !scratchInitialized) {
+        setTimeout(initScratch, 100);
+      }
+      
+    }, 100);
+  }
+
+  // ===== PARTICLES =====
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  let w, h;
+
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random() * w;
+      this.y = h + Math.random() * 100;
+      this.size = Math.random() * 2 + 0.5;
+      this.speedY = Math.random() * 0.5 + 0.2;
+      this.speedX = Math.random() * 0.4 - 0.2;
+      this.opacity = Math.random() * 0.6 + 0.2;
+      this.color = ['#ff6a88','#ff99cc','#ffccdd','#ffffff'][Math.floor(Math.random()*4)];
+    }
+    update() {
+      this.y -= this.speedY;
+      this.x += this.speedX;
+      if (this.y < -10) this.reset();
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = this.color;
+      ctx.globalAlpha = this.opacity;
+      ctx.fill();
+    }
+  }
+
+  const particleCount = window.innerWidth < 768 ? 30 : 80;
+  for (let i = 0; i < particleCount; i++) particles.push(new Particle());
+
+  function animate() {
+    ctx.clearRect(0, 0, w, h);
+    particles.forEach(p => { p.update(); p.draw(); });
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(animate);
+  }
+  animate();
+
+  // ===== MUSIC =====
+  const audio = document.getElementById('bgMusic');
+  const musicBtn = document.getElementById('musicBtn');
+  let playing = false;
+
+  function playMusic() {
+    audio.play().then(() => {
+      playing = true;
+      musicBtn.classList.add('playing');
+    }).catch(() => {});
+  }
+  function toggleMusic() {
+    if (playing) {
+      audio.pause();
+      musicBtn.classList.remove('playing');
+    } else {
+      audio.play().catch(()=>{});
+      musicBtn.classList.add('playing');
+    }
+    playing = !playing;
+  }
+
+  // ===== SCRATCH CARD =====
+  const scratchCanvas = document.getElementById('scratchCanvas');
+  const sctx = scratchCanvas.getContext('2d');
+  let isScratching = false;
+  let scratchInitialized = false;
+
+  function initScratch() {
+    if(scratchInitialized) return;
+    const rect = scratchCanvas.getBoundingClientRect();
+    scratchCanvas.width = rect.width;
+    scratchCanvas.height = rect.height;
+    const grad = sctx.createLinearGradient(0, 0, scratchCanvas.width, scratchCanvas.height);
+    grad.addColorStop(0, '#ffd700');
+    grad.addColorStop(0.5, '#ffed4e');
+    grad.addColorStop(1, '#ffa500');
+    sctx.fillStyle = grad;
+    sctx.fillRect(0, 0, scratchCanvas.width, scratchCanvas.height);
+    sctx.fillStyle = 'rgba(200, 150, 0, 0.3)';
+    sctx.font = '700 18px Poppins';
+    sctx.textAlign = 'center';
+    sctx.fillText('✨ SCRATCH ME ✨', scratchCanvas.width/2, scratchCanvas.height/2);
+    sctx.globalCompositeOperation = 'destination-out';
+    scratchInitialized = true;
+  }
+
+  function getPos(e) {
+    const rect = scratchCanvas.getBoundingClientRect();
+    const touch = e.touches ? e.touches[0] : e;
+    return {
+      x: touch.clientX - rect.left,
+      y: touch.clientY - rect.top
+    };
+  }
+
+  function scratch(e) {
+    if (!isScratching) return;
+    e.preventDefault();
+    const pos = getPos(e);
+    sctx.beginPath();
+    sctx.arc(pos.x, pos.y, 32, 0, Math.PI * 2);
+    sctx.fill();
+  }
+
+  scratchCanvas.addEventListener('mousedown', (e) => { isScratching = true; scratch(e); });
+  scratchCanvas.addEventListener('mousemove', scratch);
+  scratchCanvas.addEventListener('mouseup', () => isScratching = false);
+  scratchCanvas.addEventListener('mouseleave', () => isScratching = false);
+  scratchCanvas.addEventListener('touchstart', (e) => { isScratching = true; scratch(e); }, {passive: false});
+  scratchCanvas.addEventListener('touchmove', scratch, {passive: false});
+  scratchCanvas.addEventListener('touchend', () => isScratching = false);
+
+  // ===== SPIN WHEEL =====
+  const wheelItems = [
+    { text: 'Ek Pyaari Si Smile 😊', color: '#ff6a88' },
+    { text: 'Ek Warm Hug 🤗', color: '#ff99cc' },
+    { text: 'Ek Cute Message 💌', color: '#e63976' },
+    { text: 'Ek Chhoti Si Wish 🌟', color: '#ff6a88' },
+    { text: 'Ek Sweet Compliment 💕', color: '#ff99cc' },
+    { text: 'Ek Funny Joke 😄', color: '#e63976' },
+    { text: 'Ek Romantic Shayari 💝', color: '#ff6a88' },
+    { text: 'Ek Virtual Gift 🎁', color: '#ff99cc' }
+  ];
+
+  const wheelEl = document.getElementById('wheel');
+  const segAngle = 360 / wheelItems.length;
+
+  wheelItems.forEach((item, i) => {
+    const seg = document.createElement('div');
+    seg.className = 'wheel-segment';
+    seg.style.background = item.color;
+    seg.style.transform = `rotate(${i * segAngle}deg) skewY(${90 - segAngle}deg)`;
+    seg.innerHTML = `<span>${item.text}</span>`;
+    wheelEl.appendChild(seg);
+  });
+
+  let currentRotation = 0;
+  let spinning = false;
+
+  function spinWheel() {
+    if (spinning) return;
+    spinning = true;
+    document.getElementById('wheelResult').textContent = '';
+
+    const extraSpin = 360 * (5 + Math.floor(Math.random() * 3));
+    const randomAngle = Math.random() * 360;
+    currentRotation += extraSpin + randomAngle;
+    wheelEl.style.transform = `rotate(${currentRotation}deg)`;
+
+    setTimeout(() => {
+      const normalizedAngle = (360 - (currentRotation % 360)) % 360;
+      const index = Math.floor(normalizedAngle / segAngle);
+      document.getElementById('wheelResult').textContent = '🎉 Prize: ' + wheelItems[index].text;
+      spinning = false;
+      for (let i = 0; i < 15; i++) setTimeout(spawnHeart, i * 100);
+    }, 5100);
+  }
+
+  // ===== POPUP =====
+  function openLove() {
+    document.getElementById('lovePopup').classList.add('active');
+    for (let i = 0; i < 40; i++) setTimeout(spawnHeart, i * 80);
+  }
+  function closeLove() {
+    document.getElementById('lovePopup').classList.remove('active');
+  }
+
+  // ===== FLOATING HEARTS =====
+  function spawnHeart() {
+    const h = document.createElement('div');
+    h.textContent = ['💖','💕','💗','❤️','🌸','✨','💝'][Math.floor(Math.random()*7)];
+    h.style.position = 'fixed';
+    h.style.left = Math.random() * 100 + 'vw';
+    h.style.top = '100vh';
+    h.style.fontSize = (1 + Math.random() * 2) + 'rem';
+    h.style.zIndex = 999;
+    h.style.pointerEvents = 'none';
+    h.style.animation = `floatUp ${3 + Math.random()*3}s linear forwards`;
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 6000);
+  }
+
+  // ===== GIFT BOX =====
+  let giftOpened = false;
+  function openGift() {
+    if (giftOpened) return;
+    giftOpened = true;
+    document.getElementById('giftBox').classList.add('open');
+    setTimeout(() => {
+      document.getElementById('giftReveal').classList.add('show');
+      for (let i = 0; i < 25; i++) setTimeout(spawnHeart, i * 80);
+    }, 500);
+  }
+
+  // ===== DESKTOP CURSOR HEARTS =====
+  if (window.innerWidth > 768) {
+    let lastHeart = 0;
+    document.addEventListener('mousemove', (e) => {
+      const now = Date.now();
+      if (now - lastHeart < 100) return;
+      lastHeart = now;
+      const h = document.createElement('div');
+      h.style.position = 'fixed';
+      h.style.pointerEvents = 'none';
+      h.style.fontSize = '1rem';
+      h.style.zIndex = '999';
+      h.textContent = '✨';
+      h.style.left = e.clientX + 'px';
+      h.style.top = e.clientY + 'px';
+      h.style.transition = 'all 1s';
+      h.style.opacity = '0';
+      document.body.appendChild(h);
+      setTimeout(() => { h.style.transform = 'translateY(-30px)'; h.style.opacity = '1'; }, 10);
+      setTimeout(() => h.remove(), 1000);
+    });
+  }
+</script>
+
+</body>
+</html>
